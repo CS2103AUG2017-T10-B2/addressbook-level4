@@ -185,10 +185,6 @@ public class AddPhotoCommandParser implements Parser<AddPhotoCommand> {
         this.photo.set(requireNonNull(photo));
     }
 ```
-###### \java\seedu\address\model\person\Person.java
-``` java
-
-```
 ###### \java\seedu\address\model\person\Photo.java
 ``` java
 package seedu.address.model.person;
@@ -396,9 +392,38 @@ public class PhotoStorage {
     private final String birthdayIcon = "/images/BirthdayIcon.png";
     private final String remarkIcon = "/images/RemarkIcon.png";
     private final String ageIcon = "/images/AgeIcon.png";
-```
-###### \java\seedu\address\ui\ExtendedPersonDetails.java
-``` java
+    @FXML
+    private Label name;
+    @FXML
+    private Label phone;
+    @FXML
+    private Label address;
+    @FXML
+    private Label email;
+    @FXML
+    private Label remark;
+    @FXML
+    private Label birthday;
+    @FXML
+    private Label age;
+    @FXML
+    private FlowPane tags;
+    @FXML
+    private ImageView imageView;
+    @FXML
+    private Circle circle;
+    @FXML
+    private Circle circlePhone;
+    @FXML
+    private Circle circleAddress;
+    @FXML
+    private Circle circleEmail;
+    @FXML
+    private Circle circleRemark;
+    @FXML
+    private Circle circleBirthday;
+    @FXML
+    private Circle circleAge;
     /**
      * This class loads the persons details in the UI for the extended person's panel.
      * */
@@ -434,13 +459,6 @@ public class PhotoStorage {
 ```
 ###### \java\seedu\address\ui\PersonCard.java
 ``` java
-    private static final String FXML = "PersonListCard.fxml";
-    private static String[] colors = { "red", "yellow", "blue", "orange", "brown", "green", "pink", "black", "grey" };
-    private static HashMap<String, String> tagColors = new HashMap<String, String>();
-    private static Random random = new Random();
-```
-###### \java\seedu\address\ui\PersonCard.java
-``` java
     @FXML
     private ImageView imageView;
     @FXML
@@ -448,27 +466,7 @@ public class PhotoStorage {
 ```
 ###### \java\seedu\address\ui\PersonCard.java
 ``` java
-    private static String getColorForTag(String tagValue) {
-        if (!tagColors.containsKey(tagValue)) {
-            tagColors.put(tagValue, colors[random.nextInt(colors.length)]);
-        }
-        return tagColors.get(tagValue);
-    }
-```
-###### \java\seedu\address\ui\PersonCard.java
-``` java
         setImage(person);
-```
-###### \java\seedu\address\ui\PersonCard.java
-``` java
-    /** Changes the tag colour*/
-    private void initTags(ReadOnlyPerson person) {
-        person.getTags().forEach(tag -> {
-            Label tagLabel = new Label(tag.tagName);
-            tagLabel.setStyle("-fx-background-color: " + getColorForTag(tag.tagName));
-            tags.getChildren().add(tagLabel);
-        });
-    }
 ```
 ###### \java\seedu\address\ui\PersonCard.java
 ``` java

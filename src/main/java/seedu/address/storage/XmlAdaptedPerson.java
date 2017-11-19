@@ -33,10 +33,8 @@ public class XmlAdaptedPerson {
     private String email;
     @XmlElement(required = true)
     private String address;
-    //@@author Affalen
     @XmlElement(required = true)
     private String remark;
-    //@@author
     //@@author zengfengw
     @XmlElement(required = true)
     private String birthday;

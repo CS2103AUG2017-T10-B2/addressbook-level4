@@ -38,7 +38,7 @@ public class BrowserPanelTest extends GuiUnitTest {
         // default web page
         URL expectedDefaultPageUrl = MainApp.class.getResource(FXML_FILE_FOLDER + DEFAULT_PAGE);
         assertEquals(expectedDefaultPageUrl, browserPanelHandle.getLoadedUrl());
-
+        //@@author Affalen
         // associated web page of a person
         postNow(selectionChangedEventStub);
         URL expectedPersonUrl = new URL(GOOGLE_MAP_URL_PREFIX
@@ -48,5 +48,6 @@ public class BrowserPanelTest extends GuiUnitTest {
         waitUntilBrowserLoaded(browserPanelHandle);
         assertEquals(expectedPersonUrl.toString().substring(0, 40), browserPanelHandle.getLoadedUrl().toString()
                 .substring(0, 40));
+        //@@author
     }
 }

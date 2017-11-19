@@ -6,6 +6,7 @@
             + "Parameters: KEYWORD [MORE_KEYWORDS]...\n"
             + "Example: " + COMMAND_WORD + " n/Alice \n"
             + "Example: " + COMMAND_WORD + " p/12345678 \n"
+            + "Example: " + COMMAND_WORD + " e/alice@gmail.com \n"
             + "Example: " + COMMAND_WORD + " a/138 Clementi Road \n"
             + "Example: " + COMMAND_WORD + " t/[Friends] \n"
             + "Example: " + COMMAND_WORD + " r/Likes coffee \n"
@@ -13,111 +14,8 @@
 
     private Predicate predicate;
     public FindCommand(Predicate predicate) {
-        this.predicate = predicate;
+        this.predicate = predicate; //All different fields can be found using the FindCommand with different predicates
     }
-```
-###### \java\seedu\address\logic\commands\RemarkCommand.java
-``` java
-package seedu.address.logic.commands;
-
-import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_REMARK;
-
-import java.util.List;
-
-import seedu.address.commons.core.Messages;
-import seedu.address.commons.core.index.Index;
-import seedu.address.logic.commands.exceptions.CommandException;
-import seedu.address.model.person.Person;
-import seedu.address.model.person.ReadOnlyPerson;
-import seedu.address.model.person.Remark;
-import seedu.address.model.person.exceptions.DuplicatePersonException;
-import seedu.address.model.person.exceptions.PersonNotFoundException;
-
-/**
- * Changes the remark of an existing person in the address book.
- */
-public class RemarkCommand extends UndoableCommand {
-
-    public static final String COMMAND_WORD = "remark";
-    public static final String COMMAND_ALIAS = "rm";
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the remark of the person identified "
-            + "by the index number used in the last person listing. "
-            + "Existing remark will be overwritten by the input.\n"
-            + "Parameters: INDEX (must be a positive integer) "
-            + PREFIX_REMARK + "[REMARK]\n"
-            + "Example: " + COMMAND_WORD + " 1 "
-            + PREFIX_REMARK + "Likes to swim.";
-    public static final String MESSAGE_ADD_REMARK_SUCCESS = "Added remark to Person: %1$s";
-    public static final String MESSAGE_DELETE_REMARK_SUCCESS = "Removed remark from Person: %1$s";
-    public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book.";
-    private final Index index;
-    private final Remark remark;
-    /**
-     * @param index of the person in the filtered person list to edit the remark
-     * @param remark of the person
-     */
-    public RemarkCommand(Index index, Remark remark) {
-        requireNonNull(index);
-        requireNonNull(remark);
-        this.index = index;
-        this.remark = remark;
-    }
-    @Override
-    public CommandResult executeUndoableCommand() throws CommandException {
-        List<ReadOnlyPerson> lastShownList = model.getFilteredPersonList();
-        if (index.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
-        }
-        ReadOnlyPerson personToEdit = lastShownList.get(index.getZeroBased());
-        Person editedPerson = new Person(personToEdit.getName(), personToEdit.getPhone(), personToEdit.getEmail(),
-                personToEdit.getAddress(), remark, personToEdit.getBirthday(),
-                personToEdit.getAge(), personToEdit.getPhoto(), personToEdit.getTags());
-
-        try {
-            model.updatePerson(personToEdit, editedPerson);
-        } catch (DuplicatePersonException dpe) {
-            throw new CommandException(MESSAGE_DUPLICATE_PERSON);
-        } catch (PersonNotFoundException pnfe) {
-            throw new AssertionError("The target person cannot be missing");
-        }
-        model.getFilteredPersonList();
-        return new CommandResult(generateSuccessMessage(editedPerson));
-    }
-    /**Generate success message*/
-    private String generateSuccessMessage(ReadOnlyPerson personToEdit) {
-        if (!remark.value.isEmpty()) {
-            return String.format(MESSAGE_ADD_REMARK_SUCCESS, personToEdit);
-        } else {
-            return String.format(MESSAGE_DELETE_REMARK_SUCCESS, personToEdit);
-        }
-    }
-    @Override
-    public boolean equals(Object other) {
-        // short circuit if same object
-        if (other == this) {
-            return true;
-        }
-        // instanceof handles nulls
-        if (!(other instanceof RemarkCommand)) {
-            return false;
-        }
-        // state check
-        RemarkCommand e = (RemarkCommand) other;
-        return index.equals(e.index)
-                && remark.equals(e.remark);
-    }
-}
-```
-###### \java\seedu\address\logic\parser\AddressBookParser.java
-``` java
-        case RemarkCommand.COMMAND_ALIAS:
-        case RemarkCommand.COMMAND_WORD:
-            return new RemarkCommandParser().parse(arguments);
-```
-###### \java\seedu\address\logic\parser\CliSyntax.java
-``` java
-    public static final Prefix PREFIX_REMARK = new Prefix("r/");
 ```
 ###### \java\seedu\address\logic\parser\FindCommandParser.java
 ``` java
@@ -126,6 +24,7 @@ public class RemarkCommand extends UndoableCommand {
          */
         final Pattern commandFormat = Pattern.compile("(?<commandWord>\\w/)(?<arguments>.*)");
         final Matcher matcher = commandFormat.matcher(args.trim());
+        //We use the same Pattern and Matcher as AddressBookParser to separate the command word and arguments
 ```
 ###### \java\seedu\address\logic\parser\FindCommandParser.java
 ``` java
@@ -137,7 +36,7 @@ public class RemarkCommand extends UndoableCommand {
         String commandWord = matcher.group("commandWord");
         String arguments = matcher.group("arguments");
 
-        String[] keywords = arguments.split("\\s", 0);
+        String[] keywords = arguments.split("\\s", 0); //This regex allows FindCommand to find multiple arguments in the input.
 
         switch(commandWord) {
 
@@ -166,42 +65,6 @@ public class RemarkCommand extends UndoableCommand {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         }
-    }
-}
-```
-###### \java\seedu\address\logic\parser\RemarkCommandParser.java
-``` java
-package seedu.address.logic.parser;
-
-import static java.util.Objects.requireNonNull;
-import static seedu.address.commons.core.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_REMARK;
-
-import seedu.address.commons.core.index.Index;
-import seedu.address.commons.exceptions.IllegalValueException;
-import seedu.address.logic.commands.RemarkCommand;
-import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.Remark;
-
-/***/
-public class RemarkCommandParser implements Parser<RemarkCommand> {
-    /**
-     * Parses the given {@code String} of arguments in the context of the RemarkCommand
-     * and returns an RemarkCommand object for execution.
-     * @throws ParseException if the user input does not conform the expected format
-     */
-    public RemarkCommand parse(String args) throws ParseException {
-        requireNonNull(args);
-        ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_REMARK);
-        Index index;
-        try {
-            index = ParserUtil.parseIndex(argMultimap.getPreamble());
-        } catch (IllegalValueException ive) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, RemarkCommand.MESSAGE_USAGE));
-        }
-        String remark = argMultimap.getValue(PREFIX_REMARK).orElse("");
-        return new RemarkCommand(index, new Remark(remark));
     }
 }
 ```
@@ -373,69 +236,6 @@ public class NumberContainsKeywordsPredicate implements Predicate<ReadOnlyPerson
 
 }
 ```
-###### \java\seedu\address\model\person\Person.java
-``` java
-    public void setRemark(Remark remark) {
-        this.remark.set(requireNonNull(remark));
-    }
-```
-###### \java\seedu\address\model\person\Person.java
-``` java
-    @Override
-    public ObjectProperty<Remark> remarkProperty() {
-        return remark;
-    }
-```
-###### \java\seedu\address\model\person\Person.java
-``` java
-    @Override
-    public Remark getRemark() {
-        return remark.get();
-    }
-```
-###### \java\seedu\address\model\person\ReadOnlyPerson.java
-``` java
-                && other.getRemark().equals(this.getRemark()))
-```
-###### \java\seedu\address\model\person\ReadOnlyPerson.java
-``` java
-                .append(" Remark: ")
-                .append(getRemark())
-```
-###### \java\seedu\address\model\person\Remark.java
-``` java
-package seedu.address.model.person;
-
-import static java.util.Objects.requireNonNull;
-
-/**
- * Represents a Person's remark in the address book.
- * Guarantees: immutable; is always valid
- */
-public class Remark {
-    public static final String MESSAGE_REMARK_CONSTRAINTS =
-            "Person remarks can take any values, can even be blank";
-    public final String value;
-    public Remark(String remark) {
-        requireNonNull(remark);
-        this.value = remark;
-    }
-    @Override
-    public String toString() {
-        return value;
-    }
-    @Override
-    public boolean equals(Object other) {
-        return other == this // short circuit if same object
-                || (other instanceof Remark // instanceof handles nulls
-                && this.value.equals(((Remark) other).value)); // state check
-    }
-    @Override
-    public int hashCode() {
-        return value.hashCode();
-    }
-}
-```
 ###### \java\seedu\address\model\person\RemarkContainsKeywordsPredicate.java
 ``` java
 package seedu.address.model.person;
@@ -506,13 +306,13 @@ public class TagContainsKeywordsPredicate implements Predicate<ReadOnlyPerson> {
 
 }
 ```
-###### \java\seedu\address\storage\XmlAdaptedPerson.java
+###### \java\seedu\address\ui\BrowserPanel.java
 ``` java
-    @XmlElement(required = true)
-    private String remark;
+    public static final String GOOGLE_MAP_URL_PREFIX = "https://www.google.com.sg/maps/search/";
 ```
-###### \java\seedu\address\ui\PersonCard.java
+###### \java\seedu\address\ui\BrowserPanel.java
 ``` java
-    @FXML
-    private Label remark;
+    private void loadPersonPage(ReadOnlyPerson person) {
+        loadPage(GOOGLE_MAP_URL_PREFIX + person.getAddress().toString().replaceAll(" ", "+"));
+    }
 ```

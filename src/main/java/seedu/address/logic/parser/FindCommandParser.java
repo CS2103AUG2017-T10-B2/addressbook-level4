@@ -34,6 +34,7 @@ public class FindCommandParser implements Parser<FindCommand> {
          */
         final Pattern commandFormat = Pattern.compile("(?<commandWord>\\w/)(?<arguments>.*)");
         final Matcher matcher = commandFormat.matcher(args.trim());
+        //We use the same Pattern and Matcher as AddressBookParser to separate the command word and arguments
         //@@author
         if (trimmedArgs.isEmpty()) {
             throw new ParseException(
@@ -48,7 +49,7 @@ public class FindCommandParser implements Parser<FindCommand> {
         String commandWord = matcher.group("commandWord");
         String arguments = matcher.group("arguments");
 
-        String[] keywords = arguments.split("\\s", 0);
+        String[] keywords = arguments.split("\\s", 0); //This regex allows FindCommand to find multiple arguments in the input.
 
         switch(commandWord) {
 

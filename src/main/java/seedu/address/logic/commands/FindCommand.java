@@ -16,6 +16,7 @@ public class FindCommand extends Command {
             + "Parameters: KEYWORD [MORE_KEYWORDS]...\n"
             + "Example: " + COMMAND_WORD + " n/Alice \n"
             + "Example: " + COMMAND_WORD + " p/12345678 \n"
+            + "Example: " + COMMAND_WORD + " e/alice@gmail.com \n"
             + "Example: " + COMMAND_WORD + " a/138 Clementi Road \n"
             + "Example: " + COMMAND_WORD + " t/[Friends] \n"
             + "Example: " + COMMAND_WORD + " r/Likes coffee \n"
@@ -23,7 +24,7 @@ public class FindCommand extends Command {
 
     private Predicate predicate;
     public FindCommand(Predicate predicate) {
-        this.predicate = predicate;
+        this.predicate = predicate; //All different fields can be found using the FindCommand with different predicates
     }
     //@@author
     @Override

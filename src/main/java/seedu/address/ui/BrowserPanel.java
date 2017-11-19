@@ -24,8 +24,9 @@ import seedu.address.model.person.ReadOnlyPerson;
 public class BrowserPanel extends UiPart<Region> {
 
     public static final String DEFAULT_PAGE = "default.html";
+    //@@author Affalen
     public static final String GOOGLE_MAP_URL_PREFIX = "https://www.google.com.sg/maps/search/";
-    //public static final String GOOGLE_SEARCH_URL_SUFFIX = "&cad=h";
+    //@@author
     private static String[] motivationPages = {"motivation1.jpg", "motivation2.jpg", "motivation3.jpg",
         "motivation4.jpg", "motivation5.jpg", "motivation6.jpg", "motivation7.jpg", "motivation8.png"};
     private static Random random = new Random();
@@ -45,11 +46,11 @@ public class BrowserPanel extends UiPart<Region> {
         loadDefaultPage();
         registerAsAnEventHandler(this);
     }
-
+    //@@author Affalen
     private void loadPersonPage(ReadOnlyPerson person) {
         loadPage(GOOGLE_MAP_URL_PREFIX + person.getAddress().toString().replaceAll(" ", "+"));
     }
-
+    //@@author
     public void loadPage(String url) {
         Platform.runLater(() -> browser.getEngine().load(url));
     }
