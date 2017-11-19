@@ -33,7 +33,6 @@ public class ExtendedPersonDetails extends UiPart<Region> {
     private final String birthdayIcon = "/images/BirthdayIcon.png";
     private final String remarkIcon = "/images/RemarkIcon.png";
     private final String ageIcon = "/images/AgeIcon.png";
-    //@@author
     @FXML
     private Label name;
     @FXML
@@ -66,7 +65,6 @@ public class ExtendedPersonDetails extends UiPart<Region> {
     private Circle circleBirthday;
     @FXML
     private Circle circleAge;
-    //@@author wishingmaid
     /**
      * This class loads the persons details in the UI for the extended person's panel.
      * */
